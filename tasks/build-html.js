@@ -146,6 +146,8 @@ module.exports = function (grunt) {
 
                 if (options.prefix) {
                     url = URL.resolve(options.prefix.replace(/\\/g, '/'), url);
+                } else if (options.params.stripPath) {
+                	url = url.replace(options.params.stripPath, '');
                 }
 
                 return processHtmlTagTemplate(options, { src: url });
@@ -264,6 +266,12 @@ module.exports = function (grunt) {
                 destPath, content;
 
             file.src.forEach(function (src) {
+				var src_orig = src;
+				
+				if (file.cwd) {
+					src = path.join(file.cwd, src);
+				}
+				
                 if (params.replace) {
                     destPath = src;
                 }
@@ -271,7 +279,7 @@ module.exports = function (grunt) {
                     destPath = dest;
                 }
                 else {
-                    destPath = path.join(dest, path.basename(src));
+                    destPath = path.join(dest, src_orig);
                 }
 
                 content = grunt.util.normalizelf(grunt.file.read(src).toString());
